@@ -14,18 +14,21 @@ def checkout_this_book(book_list):
     while not valid_choice:
         print_books(book_list)
         choice = int(input("Which book would you look to checkout? > "))
-        if 0 < choice <= len(book_list):
-            chosen_book = book_list[choice - 1]
-            if chosen_book.status == "Checked Out":
-                print("This book is not available")
+        if isinstance(choice, int):
+            if 0 < choice <= len(book_list):
+                chosen_book = book_list[choice - 1]
+                if chosen_book.status == "Checked Out":
+                    print("This book is not available")
+                else:
+                    chosen_book.checkout_book()
+                    print("You have checked out " + chosen_book.title + " and it is due in 2 weeks on: " +
+                          str(chosen_book.due_date))
+                    library_menu()
+                    break
             else:
-                chosen_book.checkout_book()
-                print("You have checked out " + chosen_book.title + " and it is due in 2 weeks on: " +
-                      str(chosen_book.due_date))
-                library_menu()
-                break
+                print("Please choose a valid number from the list!")
         else:
-            print("Please choose a valid number from the list!")
+            print("That's not a number!")
 
 
 def return_this_book(book_list):
@@ -33,18 +36,22 @@ def return_this_book(book_list):
     while not valid_choice:
         print_books(book_list)
         choice = int(input("Which book would you look to return? > "))
-        if 0 < choice <= len(book_list):
-            chosen_book = book_list[choice - 1]
-            if chosen_book.status == "On Shelf":
-                print("This book is already in the library")
+        if isinstance(choice, int):
+            if 0 < choice <= len(book_list):
+                chosen_book = book_list[choice - 1]
+                if chosen_book.status == "On Shelf":
+                    print("This book is already in the library")
+                else:
+                    chosen_book.return_book()
+                    if chosen_book.condition < 1:
+                        del gc_library[choice - 1]
+                    print("You have returned " + chosen_book.title + ". Thank you!")
+                    library_menu()
+                    break
             else:
-                chosen_book.return_book()
-                print("You have returned " + chosen_book.title + ". Thank you!" +
-                      str(chosen_book.due_date))
-                library_menu()
-                break
+                print("Please choose a valid number from the list!")
         else:
-            print("Please choose a valid number from the list!")
+            print("That's not a number!")
 
 
 def search_books_by(param):
@@ -68,12 +75,16 @@ def search_books_by(param):
                 2. Nah, man
                 """)
             inp = int(input("> "))
-            if inp == 1:
-                checkout_this_book(filtered)
-            elif inp == 2:
-                print("Ok!")
-                break
-                library_menu()
+            if isinstance(inp, int):
+                if inp == 1:
+                    checkout_this_book(filtered)
+                elif inp == 2:
+                    print("Ok!")
+                    library_menu()
+                    break
+            else:
+                print("That's not a number!")
+
     else:
         while True:
             print("""There were no books matching that author. Please choose an option...
@@ -83,20 +94,23 @@ def search_books_by(param):
                 4. Exit library
                 """)
             res = int(input("Provide a number: "))
-            if res == 1:
-                break
-                search_books_by(1)
-            elif res == 2:
-                break
-                search_books_by(2)
-            elif res == 3:
-                break
-                library_menu()
-            elif res == 4:
-                print("Thanks and have a beautiful day!")
-                break
+            if isinstance(res, int):
+                if res == 1:
+                    search_books_by(1)
+                    break
+                elif res == 2:
+                    search_books_by(2)
+                    break
+                elif res == 3:
+                    library_menu()
+                    break
+                elif res == 4:
+                    print("Thanks and have a beautiful day!")
+                    break
+                else:
+                    print("Please provide a valid number from the list...")
             else:
-                print("Please provide a valid number from the list...")
+                print("That's not a number!")
 
 
 def library_menu():
@@ -110,54 +124,63 @@ def library_menu():
                   4. Exit library
                   """)
             response = int(input("Please provide a number: "))
-            if response == 1:
-                print_books(gc_library)
-                valid_next_opt = False
-                while not valid_next_opt:
-                    res = int(input("""Would you like to...
-                1. Check out a book
-                2. Return a book
-                3. (Go back)
-                """))
-                    if res == 1:
-                        checkout_this_book(gc_library)
-                        break
-                        library_menu()
-                    elif res == 2:
-                        return_this_book(gc_library)
-                        break
-                        library_menu()
-                    elif res == 3:
-                        break
-                        library_menu()
-                    else:
-                        print("please provide a valid number from the list!")
-            elif response == 2:
-                valid_next_opt = False
-                while not valid_next_opt:
-                    res = int(input("""Search by...
-                 1. Author
-                 2. Title
-                 3. (Go back)
-                 """))
-                    if res == 1 or res == 2:
-                        search_books_by(res)
-                        break
-                        library_menu()
-                    elif res == 3:
-                        break
-                        library_menu()
-                    else:
-                        print("please provide a valid number from the list!")
-            elif response == 3:
-                return_this_book(gc_library)
-                break
-                library_menu()
-            elif response == 4:
-                print("Thank you and have a nice day!")
-                break
+            if isinstance(response, int):
+                if response == 1:
+                    print_books(gc_library)
+                    valid_next_opt = False
+                    while not valid_next_opt:
+                        res = int(input("""Would you like to...
+                    1. Check out a book
+                    2. Return a book
+                    3. (Go back)
+                    """))
+                        if isinstance(res, int):
+                            if res == 1:
+                                checkout_this_book(gc_library)
+                                break
+                                library_menu()
+                            elif res == 2:
+                                return_this_book(gc_library)
+                                break
+                                library_menu()
+                            elif res == 3:
+                                break
+                                library_menu()
+                            else:
+                                print("please provide a valid number from the list!")
+                        else:
+                            print("That's not a number!")
+                elif response == 2:
+                    valid_next_opt = False
+                    while not valid_next_opt:
+                        res = int(input("""Search by...
+                     1. Author
+                     2. Title
+                     3. (Go back)
+                     """))
+                        if isinstance(res, int):
+                            if res == 1 or res == 2:
+                                search_books_by(res)
+                                break
+                                library_menu()
+                            elif res == 3:
+                                break
+                                library_menu()
+                            else:
+                                print("please provide a valid number from the list!")
+                        else:
+                            print("That's not a number!")
+                elif response == 3:
+                    return_this_book(gc_library)
+                    break
+                    library_menu()
+                elif response == 4:
+                    print("Thank you and have a nice day!")
+                    break
+                else:
+                    print("please provide a valid number from the list!")
             else:
-                print("please provide a valid number from the list!")
+                print("That's not a number!")
 
 
 library_menu()

@@ -24,7 +24,6 @@ class Book:
         self.due_date = "N/A"
         if self.condition < 1:
             print("Due to the poor condition of " + self.title + ", this book is being recycled.")
-            del self
 
 # My_book = Book("it's me", "andrea", "On Shelf", 7)
 # print(My_book.title, My_book.author, My_book.status, My_book.condition, My_book.due_date)
